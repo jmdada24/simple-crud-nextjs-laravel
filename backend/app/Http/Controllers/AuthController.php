@@ -3,18 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     // This is for Register API (name, email, password, confirm_password)
-    public function register(){
+    public function register(Request $request){
+
         $data = $request->validate([
             "name" => "required|string",
             "email" => "required|email|string|unique:users,email",
             "password" => "required"
 
+    
         ]);
+
 
         User::create($data);
 
@@ -37,6 +41,7 @@ class AuthController extends Controller
             "password" => "required"
         ]);
 
+    
         if(!Auth::attempt($request->only("email", "password"))){
 
             return response()->json([
@@ -47,8 +52,8 @@ class AuthController extends Controller
             ]);
         }
         $user = Auth::user();
-        $user->createToken("myToken")->plainTextToken;
-
+        $token = $user->createToken("myToken")->plainTextToken;
+       
         return response()->json([
             "status" => true,
             "message" => "User logged In",
@@ -67,7 +72,7 @@ class AuthController extends Controller
         return response()->json([
             "status" => true,
             "message" => "User Profile Data",
-            "user" => user
+            "user" => $user
 
         ]);
 
