@@ -1,0 +1,89 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+
+class AuthController extends Controller
+{
+    // This is for Register API (name, email, password, confirm_password)
+    public function register(){
+        $data = $request->validate([
+            "name" => "required|string",
+            "email" => "required|email|string|unique:users,email",
+            "password" => "required"
+
+        ]);
+
+        User::create($data);
+
+        return response()->json([
+            "status" => true,
+            "message" => "User registered successfully"
+
+
+        ]);
+
+    }
+
+
+    //Login API (email, password)
+
+    public function login(Request $request){
+
+        $request->validate([
+            "email" => "required|email",
+            "password" => "required"
+        ]);
+
+        if(!Auth::attempt($request->only("email", "password"))){
+
+            return response()->json([
+                "status" => false,
+                "message" => "Invalid Credentials"
+
+
+            ]);
+        }
+        $user = Auth::user();
+        $user->createToken("myToken")->plainTextToken;
+
+        return response()->json([
+            "status" => true,
+            "message" => "User logged In",
+            "token" => $token
+
+        ]);
+
+    }
+
+
+    //Profile API
+    public function profile(){
+
+        $user = Auth::user();
+
+        return response()->json([
+            "status" => true,
+            "message" => "User Profile Data",
+            "user" => user
+
+        ]);
+
+    }
+
+    //Logout API
+    public function logout(){
+
+        Auth::logout();
+        
+        return response()->json([
+            "status" => true,
+            "message" => "User logged out successfully"
+
+        ]);
+
+    }
+
+}
