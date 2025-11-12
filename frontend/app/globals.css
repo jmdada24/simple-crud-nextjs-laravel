@@ -3,6 +3,22 @@
    themes: light --default;
  }
 
+
+@plugin "daisyui/theme"{
+    name: "light";
+    default: true;
+
+  --color-primary: #1E3A8A;
+  --color-secondary: #2563EB;
+  --color-accent: #2950bc;
+  
+
+}
+
+
+
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
